@@ -2,6 +2,8 @@ import sys
 import tkinter as tk
 import wikipedia
 import csv
+import json
+import pika
 
 
 def get_wiki(key_1, key_2):
@@ -13,6 +15,7 @@ def get_wiki(key_1, key_2):
 
     # Finds the first paragraph containing both keywords and returns it
     keyword_content = list(item for item in page_content if key_1.lower() and key_2.lower() in item.lower())
+
     return keyword_content[0]
 
 
@@ -21,12 +24,28 @@ def user_input():
     wiki_out = get_wiki(ent_in1.get(), ent_in2.get())
 
     # Output data to csv
-    with open("output.csv", "w") as file:
-        csv_out = csv.writer(file)
-        csv_out.writerow([ent_in1.get(), ent_in2.get(), wiki_out])
+    to_csv(ent_in1.get(), ent_in2.get(), wiki_out)
 
     # Print data in GUI
     lbl_output["text"] = wiki_out
+
+
+def to_csv(in1, in2, out):
+    with open("output.csv", "w") as file:
+        csv_out = csv.writer(file)
+        csv_out.writerow([in1, in2, out])
+
+    connection = pika.BlockingConnection(
+        pika.ConnectionParameters(host='localhost')
+    )
+
+    channel = connection.channel()
+    channel.queue_declare(queue='content-gen')
+
+    channel.basic_publish(exchange='', routing_key='content-gen', body=json.dumps([in1, in2, out]),
+                          properties=pika.BasicProperties(delivery_mode=2,
+                                                          ))
+    channel.close()
 
 
 if __name__ == "__main__":
@@ -45,9 +64,7 @@ if __name__ == "__main__":
         para = get_wiki(cmd1, cmd2)
 
         # Output data to csv
-        with open("output.csv", "w") as file:
-            csv_out = csv.writer(file)
-            csv_out.writerow([cmd1, cmd2, para])
+        to_csv(cmd1, cmd2, para)
 
     elif len(sys.argv) == 1:
         # GUI execution
