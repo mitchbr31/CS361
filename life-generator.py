@@ -5,20 +5,12 @@
 import csv
 import tkinter as tk
 import sys
-import pika
-import json
-
-connection = pika.BlockingConnection(
-    pika.ConnectionParameters(host='localhost', port=5672)
-)
-
-channel = connection.channel()
-channel.queue_declare(queue = 'hello')
 
 
 input_file = None
 if sys.argv[0] != sys.argv[-1]:
     input_file = sys.argv[-1]
+
 
 def get_results(entries, results_listbox, cat_name, x):
 
@@ -56,15 +48,11 @@ def get_results(entries, results_listbox, cat_name, x):
         results['output_item_num_reviews'] = val['number_of_reviews']
         all_results.append(results)
 
-    with open('output.csv', mode='w+', encoding='utf8') as outfile:
+    with open('life_output.csv', mode='w+', encoding='utf8') as outfile:
         writer = csv.writer(outfile)
         writer.writerow(['input_item_type','input_item_category','input_number_to_generate','output_item_name','output_item_rating','output_item_num_reviews'])
         for result in all_results:
             writer.writerow(result.values())
-
-    channel.basic_publish(exchange='', routing_key='hello', body=json.dumps(all_results), properties=pika.BasicProperties(delivery_mode=2,
-    ))
-    channel.close()
 
 
 

@@ -31,21 +31,9 @@ def user_input():
 
 
 def to_csv(in1, in2, out):
-    with open("output.csv", "w") as file:
+    with open("cont_output.csv", "w") as file:
         csv_out = csv.writer(file)
         csv_out.writerow([in1, in2, out])
-
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='localhost')
-    )
-
-    channel = connection.channel()
-    channel.queue_declare(queue='content-gen')
-
-    channel.basic_publish(exchange='', routing_key='content-gen', body=json.dumps([in1, in2, out]),
-                          properties=pika.BasicProperties(delivery_mode=2,
-                                                          ))
-    channel.close()
 
 
 if __name__ == "__main__":
