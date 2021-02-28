@@ -1,7 +1,7 @@
 # Tate Jenkins
 # CS 361
 # 2/14/2021
-
+#/usr/local/bin/env
 import csv
 import tkinter as tk
 import sys
@@ -56,6 +56,8 @@ def get_results(entries, results_listbox, cat_name, x):
 
 
 
+
+
 entries = {}
 cats = {}
 filename = 'amazon_co-ecommerce_sample.csv'
@@ -81,6 +83,7 @@ if input_file:
             if row[0] == 'toys':
                 category = row[1]
                 number = int(row[2])
+                break
 
 
 window = tk.Tk()
@@ -108,4 +111,4 @@ results_listbox = tk.Listbox(window)
 results_listbox.pack(padx=10, pady=10,fill=tk.BOTH, expand=True)
 if input_file:
     get_results(entries, results_listbox, category, number)
-window.mainloop()
+#window.mainloop()

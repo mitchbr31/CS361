@@ -1,9 +1,11 @@
+#/usr/local/bin/env
 import sys
 import tkinter as tk
 import wikipedia
 import csv
 import json
 import pika
+
 
 
 def get_wiki(key_1, key_2):
@@ -47,6 +49,9 @@ if __name__ == "__main__":
                 # Grab the two keywords
                 cmd1 = row[0]
                 cmd2 = row[1]
+                if sys.argv[1] == "content_in.csv":
+                    cmd1 = cmd1.split()[0]
+                    break
 
         # Grabs the wiki data
         para = get_wiki(cmd1, cmd2)
