@@ -211,7 +211,7 @@ def read_data():
     Opens input.csv file if it exist, else returns nothing
     """
     try:
-        with open('input.csv', 'r') as csv_file:
+        with open('pop_input.csv', 'r') as csv_file:
             csv_reader = csv.reader(csv_file)
             cnt = 0
             for row in csv_reader:
@@ -228,7 +228,7 @@ def write_data(year_out, state_out, pop_out):
     """
     Saves data to output.csv
     """
-    with open('output.csv', 'w') as csv_file:
+    with open('pop_output.csv', 'w') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow(['Input_Year', 'Input_State', 'Population'])
         csv_writer.writerow([year_out, state_out, pop_out])
